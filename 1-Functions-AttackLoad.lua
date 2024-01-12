@@ -1,139 +1,77 @@
-local Mouse = game.Players.LocalPlayer:GetMouse()
-local Toggle = Instance.new("ScreenGui")
-local LoadF = Instance.new("ImageButton")
-local UICorner = Instance.new("UICorner")
-local MainStroke = Instance.new("UIStroke")
-local P = game:GetService("Players")
-local LP = P.LocalPlayer
-local PG = LP.PlayerGui
-local RS = game:GetService("ReplicatedStorage")
-local Remotes = RS:WaitForChild("Remotes")
-local Remote = Remotes:WaitForChild("CommF_")
-local RunS = game:GetService("RunService")
-local Loop = RunS.RenderStepped
-local Data = LP.Data
-local WS = game:GetService("Workspace")
-local WO = WS["_WorldOrigin"]
-local VU = game:GetService("VirtualUser")
-local EnemySpawns = WO.EnemySpawns
-local Enemies = WS.Enemies
-local CameraShaker = require(RS.Util.CameraShaker)
-local GuideModule = require(RS.GuideModule)
-local Quests = require(RS.Quests)
-local VIM = game:service("VirtualInputManager")
-function FastAttack()
+new = {}
+function FastAttackConnectorFunction()
     repeat wait() until game:IsLoaded()
     repeat task.wait() until game.ReplicatedStorage
     repeat task.wait() until game.Players
     repeat task.wait() until game.Players.LocalPlayer
     repeat task.wait() until game.Players.LocalPlayer:FindFirstChild("PlayerGui")
-    local CombatFramework = require(LP.PlayerScripts:WaitForChild("CombatFramework"))
-    local getValues = getupvalues(CombatFramework)[2]
-    local RigController1 = require(LP.PlayerScripts.CombatFramework.RigController)
-    local GetValues2 = getupvalues(RigController1)[2]
-    local RigLib1 = require(RS.CombatFramework.RigLib)
-    local tickOld1 = tick()
-    function DisableCameraShaker()
-        CameraShakerCombat = require(LP.PlayerScripts.CombatFramework.CameraShaker)
-        while wait() do
-            CameraShakerCombat.CameraShakeInstance.CameraShakeState.Inactive = 0
+    local CombatFramework = require(game:GetService("Players").LocalPlayer.PlayerScripts:WaitForChild("CombatFramework"))
+    local CombatFrameworkR = getupvalues(CombatFramework)[2]
+    local RigController = require(game:GetService("Players")["LocalPlayer"].PlayerScripts.CombatFramework.RigController)
+    local RigControllerR = getupvalues(RigController)[2]
+    local realbhit = require(game.ReplicatedStorage.CombatFramework.RigLib)
+    local cooldownfastattack = tick()
+
+
+    
+    ReturnFunctions = {}
+    function CurrentWeapon()
+        local ac = CombatFrameworkR.activeController
+        local ret = ac.blades[1]
+        if not ret then
+            return game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Name
         end
-    end
-    function WeaponCurrentChange()
-        local activeControllerl = getValues.activeController
-        local BladeActC = activeControllerl.blades[1]
-        if not BladeActC then
-            return LP.Character:FindFirstChildOfClass("Tool").Name
-        end
-        pcall(function()
-            while BladeActC.Parent ~= LP.Character do
-                BladeActC = BladeActC.Parent
-            end
-        end)
-        if not BladeActC then
-            return LP.Character:FindFirstChildOfClass("Tool").Name
-        end
-        return BladeActC
-    end
-    function getAllBladeHitsPlayers(HitSU)
-        Hits = {}
-        local LocalPlayerGet1 = LP
-        local Characters1 = WS.Characters:GetChildren()
-        for r = 1, #Characters1 do
-            local v = Characters1[r]
-            HumanoidOfClass = v:FindFirstChildOfClass("Humanoid")
-            if v.Name ~= LP.Name and HumanoidOfClass and HumanoidOfClass.RootPart and HumanoidOfClass.Health > 0 and LocalPlayerGet1:DistanceFromCharacter(HumanoidOfClass.RootPart.Position) < HitSU + 5 then
-                table.insert(Hits, HumanoidOfClass.RootPart)
-            end
-        end
-        return Hits
-    end
-    function getAllBladeHits(HitSU)
-        Hits = {}
-        local LocalPlayerGet1 = LP
-        local Enemies111 = Enemies:GetChildren()
-        for r = 1, #Enemies111 do
-            local v = Enemies111[r]
-            HumanoidOfClass = v:FindFirstChildOfClass("Humanoid")
-            if HumanoidOfClass and HumanoidOfClass.RootPart and HumanoidOfClass.Health > 0 and LocalPlayerGet1:DistanceFromCharacter(HumanoidOfClass.RootPart.Position) < HitSU + 5 then
-                table.insert(Hits, HumanoidOfClass.RootPart)
-            end
-        end
-        return Hits
-    end
-    ReturnFastAttackFunction = {}
-    function BladeAllHitsHealh(HitSU)
-        Hits = {}
-        local LocalPlayerGet1 = LP
-        local Enemies111 = Enemies:GetChildren()
-        for r = 1, #Enemies111 do
-            local v = Enemies111[r]
-            HumanoidOfClass = v:FindFirstChildOfClass("Humanoid")
-            if HumanoidOfClass and HumanoidOfClass.RootPart and HumanoidOfClass.Health > 0 and HumanoidOfClass.Health ~= HumanoidOfClass.MaxHealth and LocalPlayerGet1:DistanceFromCharacter(HumanoidOfClass.RootPart.Position) < HitSU + 5 then
-                table.insert(Hits, Human.RootPart)
-            end
-        end
-        return Hits
-    end
-    function DelayCountFastAttack()
-        pcall(function()
-            if LP.Character.Stun.Value ~= 0 then
-                return nil
-            end
-                local activeController22 = getValues.activeController
-                activeController22.hitboxMagnitude = 55
-                if activeController22 and activeController22.equipped then
-                    for b0 = 1, 1 do
-                        local HitBladesv = require(RS.CombatFramework.RigLib).getBladeHits(LP.Character, {LP.Character.HumanoidRootPart}, 60)
-                        if #HitBladesv > 0 then
-                            local valueget1 = debug.getupvalue(activeController22.attack, 5)
-                            local valueget2 = debug.getupvalue(activeController22.attack, 6)
-                            local valueget3 = debug.getupvalue(activeController22.attack, 4)
-                            local valueget4 = debug.getupvalue(activeController22.attack, 7)
-                            local miscget1 = (valueget1 * 798405 + valueget3 * 727595) % valueget2
-                            local miscget2 = valueget3 * 798405
-                            (function()
-                                miscget1 = (miscget1 * valueget2 + miscget2) % 1099511627776
-                                valueget1 = math.floor(miscget1 / valueget2)
-                                valueget3 = miscget1 - valueget1 * valueget2
-                            end)()
-                            valueget4 = valueget4 + 1
-                            debug.setupvalue(activeController22.attack, 5, valueget1)
-                            debug.setupvalue(activeController22.attack, 6, valueget2)
-                            debug.setupvalue(activeController22.attack, 4, valueget3)
-                            debug.setupvalue(activeController22.attack, 7, valueget4)
-                            for k,v in pairs(activeController22.animator.anims.basic) do
-                                v:Play()
-                            end
-                            if LP.Character:FindFirstChildOfClass("Tool") and activeController22.blades and activeController22.blades[1] then
-                                RS.RigControllerEvent:FireServer("weaponChange", tostring(WeaponCurrentChange()))
-                                RS.RigControllerEvent:FireServer("hit", HitBladesv, 2, "")
-                            end
-                        end
-                    end
+        pcall(
+            function()
+                while ret.Parent ~= game.Players.LocalPlayer.Character do
+                    ret = ret.Parent
                 end
             end
         )
+        if not ret then
+            return game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Name
+        end
+        return ret
+    end
+    function AttackFunctgggggion()
+        if game.Players.LocalPlayer.Character.Stun.Value ~= 0 then
+            return nil
+        end
+        local ac = CombatFrameworkR.activeController
+        ac.hitboxMagnitude = 55
+        if ac and ac.equipped then
+            for indexincrement = 1, 1 do
+                local bladehit =require(game.ReplicatedStorage.CombatFramework.RigLib).getBladeHits(game.Players.LocalPlayer.Character,{game.Players.LocalPlayer.Character.HumanoidRootPart},60)
+                if #bladehit > 0 then
+                    local AcAttack8 = debug.getupvalue(ac.attack, 5)
+                    local AcAttack9 = debug.getupvalue(ac.attack, 6)
+                    local AcAttack7 = debug.getupvalue(ac.attack, 4)
+                    local AcAttack10 = debug.getupvalue(ac.attack, 7)
+                    local NumberAc12 = (AcAttack8 * 798405 + AcAttack7 * 727595) % AcAttack9
+                    local NumberAc13 = AcAttack7 * 798405
+                    (function()
+                        NumberAc12 = (NumberAc12 * AcAttack9 + NumberAc13) % 1099511627776
+                        AcAttack8 = math.floor(NumberAc12 / AcAttack9)
+                        AcAttack7 = NumberAc12 - AcAttack8 * AcAttack9
+                    end)()
+                    AcAttack10 = AcAttack10 + 1
+                    debug.setupvalue(ac.attack, 5, AcAttack8)
+                    debug.setupvalue(ac.attack, 6, AcAttack9)
+                    debug.setupvalue(ac.attack, 4, AcAttack7)
+                    debug.setupvalue(ac.attack, 7, AcAttack10)
+                    for k, v in pairs(ac.animator.anims.basic) do
+                        v:Play(0.01,0.01,0.01)
+                    end
+                    if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") and ac.blades and ac.blades[1] then
+                        game:GetService("ReplicatedStorage").RigControllerEvent:FireServer(
+                            "weaponChange",
+                            tostring(CurrentWeapon())
+                        )
+                        game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladehit, 2, "")
+                    end
+                end
+            end
+        end
     end
     CountAttack = 0  
     TickCountAttack = tick()
@@ -151,48 +89,66 @@ function FastAttack()
             return OldNameCall(self, unpack(Args))
         end)
     end)
-    function ReturnFastAttackFunction:GetCount()
+    function ReturnFunctions:GetCount()
         return CountAttack
     end
-    function ReturnFastAttackFunction:Attack(k)
-        EnableFA = k
+    function ReturnFunctions:Attack(k)
+        UFFF = k 
     end
+    FastAttackSettings = {
+        ["CDAAT"] = 80,
+        ["TimeWait"] = 10
+    }
     spawn(function()
-        Cam = require(RS.Util.CameraShaker)
-        Cam:Stop()
+        local CameraShakerR = require(game.ReplicatedStorage.Util.CameraShaker)
+        CameraShakerR:Stop()
     end)
-    function ReturnFastAttackFunction:InputValue(ba)
-        CountDownAttackNext = ba
+    function ReturnFunctions:InputValue(CDAAT,TimeWait)
+        FastAttackSettings["CDAAT"] = CDAAT
+        FastAttackSettings["TimeWait"] = TimeWait
     end
-    wtf = {}
-    MiscAddFD = 0
-    DelayAttackCurrent = 0.35
-    TimeNext = 10
+    function ReturnFunctions:InputSetting(tbbb)
+        conchosetting = tbbb
+    end
+    function atack()
+        pcall(function()
+            AttackFunctgggggion()
+        end)
+    end
+    ToiCanOxi = 0
+    conchosetting = {}
+    function ReturnFunctions:GetMethod()
+        MethodAttack = "Slow"
+        if CountAttack < FastAttackSettings["CDAAT"] then 
+            MethodAttack = "Fast"
+        end 
+        return MethodAttack
+    end
     spawn(function()
         while task.wait() do 
-            if EnableFA then 
+            if UFFF then 
                 pcall(function()
-                    if wtf and type(wtf) == "table" then 
-                        if wtf and MasteryOption then 
-                            MiscAddFD = 2 
-                            DelayCountFastAttack()
-                            if DelayAttackCurrent and type(DelayAttackCurrent) == "number" and DelayAttackCurrent >= 0.1 then 
-                                wait(DelayAttackCurrent)
+                    if conchosetting and type(conchosetting) == "table" then 
+                        if conchosetting and conchosetting["Mastery Farm"] then 
+                            ToiCanOxi = 2 
+                            atack()
+                            if conchosetting["DelayAttack"] and type(conchosetting["DelayAttack"]) == "number" and conchosetting["DelayAttack"] >= 0.1 then 
+                                wait(conchosetting["DelayAttack"])
                             else
-                                DelayAttackCurrent = 0.2 
-                                wait(DelayAttackCurrent)
+                                conchosetting["DelayAttack"] = 0.2 
+                                wait(conchosetting["DelayAttack"])
                             end
-                        elseif CountAttack < CountDownAttackNext then 
-                            MiscAddFD = MiscAddFD +1
-                            DelayCountFastAttack()
-                        elseif CountAttack >= CountDownAttackNext then 
-                            MiscAddFD = MiscAddFD +1
-                            DelayCountFastAttack()
-                            if DelayAttackCurrent and type(DelayAttackCurrent) == "number" and DelayAttackCurrent >= 0.1 then 
-                                wait(DelayAttackCurrent*2)
+                        elseif CountAttack < FastAttackSettings["CDAAT"] then 
+                            ToiCanOxi = ToiCanOxi +1
+                            atack()
+                        elseif CountAttack >= FastAttackSettings["CDAAT"] then 
+                            ToiCanOxi = ToiCanOxi +1
+                            atack()
+                            if conchosetting["DelayAttack"] and type(conchosetting["DelayAttack"]) == "number" and conchosetting["DelayAttack"] >= 0.1 then 
+                                wait(conchosetting["DelayAttack"]*2)
                             else
-                                DelayAttackCurrent = 0.2 
-                                wait(DelayAttackCurrent*2)
+                                conchosetting["DelayAttack"] = 0.2 
+                                wait(conchosetting["DelayAttack"]*2)
                             end
                         end
                     end
@@ -202,9 +158,18 @@ function FastAttack()
     end) 
     spawn(function()
         while task.wait() do 
-            if EnableFA then 
+            pcall(function() 
+                if tick()-TickCountAttack >= FastAttackSettings["TimeWait"] then 
+                    CountAttack = 0 
+                end
+            end)
+        end
+    end)
+    spawn(function()
+        while task.wait() do 
+            if UFFF then 
                 pcall(function()
-                    local Fastflux = getupvalues(require(LP.PlayerScripts.CombatFramework))[2]
+                    local Fastflux = getupvalues(require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework))[2]
                     Fastflux.activeController.hitboxMagnitude = 55
                     Fastflux.activeController.timeToNextAttack = 0
                     Fastflux.activeController.attacking = false
@@ -219,9 +184,9 @@ function FastAttack()
     end)
     spawn(function()
         while task.wait() do 
-            if EnableFA then 
+            if UFFF then 
                 pcall(function()
-                    local Fastflux = getupvalues(require(LP.PlayerScripts.CombatFramework))[2]
+                    local Fastflux = getupvalues(require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework))[2]
                     Fastflux.activeController.hitboxMagnitude = 55
                     Fastflux.activeController.timeToNextAttack = 0
                     Fastflux.activeController.attacking = false
@@ -230,8 +195,8 @@ function FastAttack()
                     Fastflux.activeController.timeToNextBlock = 0
                     a = math.random(1,5)
                     if a > 1 then 
-                        VU:CaptureController()
-                        VU:Button1Down(Vector2.new(50,50))
+                        game:GetService "VirtualUser":CaptureController()
+                        game:GetService "VirtualUser":Button1Down(Vector2.new(50, 50))
                     end
                     task.wait(0.2)
                 end)
@@ -239,16 +204,18 @@ function FastAttack()
         end
     end)
     spawn(function()
-        while wait() do
-            if EnableFA then
-                if CountAttack >= CountDownAttackNext then
-                    TickOld221 = tick()
-                    repeat wait() until tick() - TickOld221 >= TimeNext
-                    CountAttack = 0
-                end
+        while wait() do 
+            if UFFF then
+                pcall(function() 
+                    if CountAttack >= FastAttackSettings["CDAAT"] then 
+                        TickFastAttackF = tick()
+                        repeat wait() until tick()-TickFastAttackF >= FastAttackSettings["TimeWait"]
+                        CountAttack = 0
+                    end    
+                end)  
             end
         end
     end)
-    return ReturnFastAttackFunction
+    return ReturnFunctions
 end
-return FastAttack()
+return FastAttackConnectorFunction()
